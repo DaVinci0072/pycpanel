@@ -13,7 +13,7 @@ def unauthorised():
 
 
 class conn(object):
-    def __init__(self, hostname, username='root', hash=None, password=None, ssl=True,  verify=False, check_conn=True):
+    def __init__(self, hostname, username='root', hash=None, password=None, ssl=True,  verify=False, check_conn=True, version=2):
         self.__session__ = requests.Session()
         if hash is not None:
             hash = hash.replace('\r', '').replace('\n', '')
@@ -26,6 +26,7 @@ class conn(object):
         elif ssl is False:
             self.hostname = 'http://' + str(hostname) + ':2086/'
         self.verify = verify
+        self.version = version
         try:
             if check_conn is True:
                 self.apilist = self.api('applist')['app']
@@ -42,12 +43,13 @@ class conn(object):
             return json.loads(r.text)
         return r.text
 
-    def cpanel_api(self, module, function, user, version=2, params=None, api='json-api/cpanel'):
+    def cpanel_api(self, module, function, user, params=None, api='json-api/cpanel', version=None):
+        version = version if version is not None else self.version
         generic = {
             'cpanel_jsonapi_user': user,
             'cpanel_jsonapi_module': module,
             'cpanel_jsonapi_func': function,
-            'cpanel_jsonapi_apiversion': version,
+            'cpanel_jsonapi_apiversion': version
         }
         if params is not None:
             params = dict(generic.items() + params.items())
@@ -59,6 +61,11 @@ class conn(object):
         if api == 'json-api/cpanel':
             if version == 1:
                 return json.loads(r.text)['data']
+            if version == 3:
+                errors = json.loads(r.text)['result']['errors']
+                if errors is not None:
+                    raise Exception('API error: {}.'.format(errors))
+                return json.loads(r.text)['result']['data']
             else:
                 return json.loads(r.text)['cpanelresult']['data']
         return r.text
