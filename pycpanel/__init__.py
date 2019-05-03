@@ -42,12 +42,12 @@ class conn(object):
             return json.loads(r.text)
         return r.text
 
-    def cpanel_api(self, module, function, user, params=None, api='json-api/cpanel', version=2):
+    def cpanel_api(self, module, function, user, version=2, params=None, api='json-api/cpanel'):
         generic = {
             'cpanel_jsonapi_user': user,
             'cpanel_jsonapi_module': module,
             'cpanel_jsonapi_func': function,
-            'cpanel_jsonapi_apiversion': version
+            'cpanel_jsonapi_apiversion': version,
         }
         if params is not None:
             params = dict(generic.items() + params.items())
@@ -108,3 +108,9 @@ class conn(object):
                 return True
             else:
                 return unauthorised()
+
+
+
+
+
+
