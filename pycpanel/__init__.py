@@ -13,7 +13,7 @@ def unauthorised():
 
 
 class conn(object):
-    def __init__(self, hostname, username='root', hash=None, password=None, ssl=True,  verify=False, check_conn=True, version=2):
+    def __init__(self, hostname, username='root', hash=None, password=None, ssl=True,  verify=False, check_conn=True):
         self.__session__ = requests.Session()
         if hash is not None:
             hash = hash.replace('\r', '').replace('\n', '')
@@ -26,7 +26,6 @@ class conn(object):
         elif ssl is False:
             self.hostname = 'http://' + str(hostname) + ':2086/'
         self.verify = verify
-        self.version = version
         try:
             if check_conn is True:
                 self.apilist = self.api('applist')['app']
@@ -43,8 +42,7 @@ class conn(object):
             return json.loads(r.text)
         return r.text
 
-    def cpanel_api(self, module, function, user, params=None, api='json-api/cpanel', version=None):
-        version = version if version is not None else self.version
+    def cpanel_api(self, module, function, user, params=None, api='json-api/cpanel', version=2):
         generic = {
             'cpanel_jsonapi_user': user,
             'cpanel_jsonapi_module': module,
