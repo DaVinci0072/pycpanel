@@ -122,6 +122,12 @@ http://docs.cpanel.net/twiki/bin/view/ApiDocs/Api2/WebHome
 
     pycpanel.cpanel_api(module, function, user, params=None, version=2)
 
+Detailed documentation for the cPanel UAPI Functions can be found here:
+https://documentation.cpanel.net/display/DD/Guide+to+UAPI
+
+.. code:: python
+
+    pycpanel.cpanel_api(module, function, user, params=None, version=3)
 
 API 2 Function without params
 -----------------------------
@@ -156,7 +162,21 @@ This example creates a new email account (steve@mydomain.com.au) for the user ac
     }
     
     server.cpanel_api('Email', 'addpop', 'user1', params=params)
+
+
+UAPI Function without params
+-----------------------------
+
+This example retrieves a list of email accounts associated with a cPanel account with username 'user1'.
+
+.. code:: python
+
+    import pycpanel
     
+    server = pycpanel.conn(hostname='myserver.com.au', password='mypassword', version=3)
+    
+    print server.cpanel_api('Email', 'list_pops', 'user1')
+
 
 Using cPanel API 1
 ------------------
@@ -258,10 +278,3 @@ This function will ignore an IP address in lfd and add it to the ignore file (cs
     server.csf.ignore('192.168.0.1')
     
     # Returns True if succesfull.
-
-
-
-
-
-
-
